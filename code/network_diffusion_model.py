@@ -59,6 +59,16 @@ class NDM():
         # make symmetric matrix
         return np.triu(C,1)+np.tril(C.T)
 
+    def get_Laplacian(self):
+        '''
+        get Laplacian matrix from connectome
+        '''
+        C = self.prep_connectome()
+        rowdegree = np.sum(C, 1)
+        D = np.diag(np.sum(C,0))
+        H = D - C                           # this does not include self-connections in the Laplacian
+        H = np.diag(1/(rowdegree+np.finfo(float).eps)) @ H
+        return H
     
     def run_NDM(self):
         '''
@@ -69,17 +79,12 @@ class NDM():
                 t = list of time points at which to predict accumulation
         output:
         '''
-        C = self.prep_connectome()
+        
         dt = self.t[1]-self.t[0]
         Nt = len(self.t)
 
-        rowdegree = np.sum(C, 1)
-        D = np.diag(np.sum(C,0))
-        H = D - C                           # this does not include self-connections in the Laplacian
-        H = np.diag(1/(rowdegree+np.finfo(float).eps)) @ H  # since all brain regions are not the same size, each row and column is normalised by its sum
-        # note: this normalisation prevents means the sum of tau at each time is not consistent
-        # note +eps above, this prevents H containing NaNs if the rowdegree contains 0
-
+        H = self.get_Laplacian()
+        
         #loop through time points, estimating tau accumulation at each point
         x_t = np.empty([len(C),Nt])
         x_t[:] = 0
