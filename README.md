@@ -1,6 +1,12 @@
 # network_spreading_models
 Project for CMICHACKS 2023
 
+Team: Ellie, Anna, Tiantian, Neil, James, ...
+
+## Code
+
+- [pet_merger.py](./code/pet_merger.py) for merging PET CSV(s) with ADNIMERGE. PET is missing VISCODE.
+
 ## Idea for synthetic data
 
 - Three regions of interest (ROIs): A, B, C
