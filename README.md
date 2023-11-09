@@ -1,7 +1,7 @@
 # network_spreading_models
 Project for CMICHACKS 2023
 
-Team: Ellie, Anna, Tiantian, Neil, James, ...
+Team: Ellie, Anna, Tiantian, Neil, James, Antoine, Xin
 
 ## Code
 
