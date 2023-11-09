@@ -58,6 +58,10 @@ class NDM():
 
         # make symmetric matrix
         return np.triu(C,1)+np.tril(C.T)
+    
+    def NDM_step(self,H,x,dt):
+
+        return expm(-self.gamma*H*dt) @ x
 
     
     def run_NDM(self):
@@ -87,20 +91,7 @@ class NDM():
         x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
 
         for kt in range(1,Nt):  #iterate through time points, calculating the node atrophy as you go along
-                x_t[:,kt] = expm(-self.gamma*H*dt) @ x_t[:,kt-1]
+                x_t[:,kt] = self.NDM_step(H,x_t[:,kt-1],dt)
 
         return x_t/np.max(x_t,axis=0)
     
-
-class FKPP(NDM):
-    def __init__(self, connectome_fname, gamma, t):
-        super().__init__(connectome_fname, gamma, t)
-
-    def logistic_model(self, x):
-        return x*(1-x)
-
-    def run_FKPP(self,x,alpha,dt):
-
-        dx = alpha*self.NDM_step(H,x,dt) + (1-alpha)*self.logistic_model(x)*dt
-
-        return x+dx
