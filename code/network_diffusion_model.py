@@ -34,13 +34,13 @@ class NDM():
             seed_r_ind: index of right seed
 
         '''
-        seed_l_ind = self.ref_list.index(self.seed + "_L")
-        seed_r_ind = self.ref_list.index(self.seed + "_R")
+        seed_l_ind = self.ref_list.index(self.seed_region + "_L")
+        seed_r_ind = self.ref_list.index(self.seed_region + "_R")
         return (seed_l_ind, seed_r_ind)
 
     def get_initial_conditions(self):
         seed_l_ind, seed_r_ind = self.seed2idx()
-        x_0 = np.zeros()
+        x_0 = np.zeros(len(self.ref_list))
         x_0[seed_l_ind] = 1
         x_0[seed_r_ind] = 1
         return x_0
@@ -50,7 +50,7 @@ class NDM():
         '''
         load connectome and ensure it is symmetrical
         '''
-        C = np.loadtxt(self.connectome_fname, delimiter=",")
+        C = np.loadtxt(self.connectome_fname)
 
         # check connectome is 2D square
         assert C.shape[0] == C.shape[1]
