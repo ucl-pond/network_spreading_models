@@ -23,6 +23,8 @@ class NDM():
         self.t = t
         self.seed_region = seed_region
         self.ref_list = ref_list
+        self.dt = self.t[1]-self.t[0]
+        self.Nt = len(self.t)
  
     def seed2idx(self):
         '''
@@ -71,9 +73,9 @@ class NDM():
         # make symmetric matrix
         return np.triu(C,1)+np.tril(C.T)
     
-    def NDM_dx(self,H,x,dt):
+    def NDM_dx(self,H,x):
 
-        return (-self.gamma * (H @ x)) * dt
+        return (-self.gamma * (H @ x)) * self.dt
 
     def get_Laplacian(self):
         '''
@@ -95,20 +97,17 @@ class NDM():
                 t = list of time points at which to predict accumulation
         output:
         '''
-        
-        dt = self.t[1]-self.t[0]
-        Nt = len(self.t)
 
         H = self.get_Laplacian()
         
         #loop through time points, estimating tau accumulation at each point
-        x_t = np.empty([len(C),Nt])
+        x_t = np.empty([len(H),self.Nt])
         x_t[:] = 0
 
         x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
 
-        for kt in range(1,Nt):  #iterate through time points, calculating the node atrophy as you go along
-                x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1],dt)
+        for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
+                x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1])
 
         return x_t/np.max(x_t,axis=0)
     
