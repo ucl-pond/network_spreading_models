@@ -50,7 +50,19 @@ class NDM():
         '''
         load connectome and ensure it is symmetrical
         '''
-        C = np.loadtxt(self.connectome_fname)
+
+        with open(self.connectome_fname) as f:
+            first_line = f.readline()
+            if "," in first_line:
+                delimiter = ","
+            elif "\t" in first_line:
+                delimiter = "\t"
+            elif " " in first_line:
+                delimiter = " "
+            else:
+                raise ValueError("Delimiter not found")  
+        
+        C = np.loadtxt(self.connectome_fname,delimiter=delimiter)
 
         # check connectome is 2D square
         assert C.shape[0] == C.shape[1]
