@@ -29,8 +29,6 @@ class FKPP_class(NDM):
         x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
 
         for kt in range(1,Nt):  #iterate through time points, calculating the node atrophy as you go along
-            x_t[:,kt] = self.alpha*self.NDM_step(H,x_t[:,kt-1],dt) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*dt
-
-        # dx = alpha*self.NDM_step(H,x,dt) + (1-alpha)*self.logistic_model(x)*dt
+            x_t[:,kt] = x_t[:,kt-1] + self.alpha*self.NDM_dx(H,x_t[:,kt-1],dt) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*dt
 
         return x_t
