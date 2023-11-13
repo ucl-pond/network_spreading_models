@@ -23,3 +23,22 @@ class FKPP_class(NDM):
             x_t[:,kt] = x_t[:,kt-1] + self.alpha*self.NDM_dx(H,x_t[:,kt-1]) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*self.dt
 
         return x_t
+    
+    def run_weighted_FKPP(self, weights):
+        '''
+        run the FKPP with additional weighting on the logistic model term.
+        e.g. vector with amyloid SUVR
+        '''
+
+        H = self.get_Laplacian()
+
+        #loop through time points, estimating tau accumulation at each point
+        x_t = np.empty([len(H),self.Nt])
+        x_t[:] = 0
+
+        x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
+
+        for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
+            x_t[:,kt] = x_t[:,kt-1] + self.alpha*self.NDM_dx(H,x_t[:,kt-1]) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*weights*self.dt
+
+        return x_t
