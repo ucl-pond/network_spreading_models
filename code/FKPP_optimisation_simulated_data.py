@@ -53,16 +53,10 @@ plot_objective(res)
 print(f"optimal seed = {optimal_params['seed']}\noptimal alpha = {optimal_params['alpha']}")
 
 # run with the optimal parameters to get the prediction accuracy
-fkpp_optimal = FKPP_class(connectome_fname = connectome_fname,
-            gamma = 0.01,
-            t = t,
-            seed_region=optimal_params["seed"],
-            ref_list=ref_list,
-            alpha=optimal_params["alpha"],
-            weights=weights
-          )
+fkpp.seed_region = optimal_params["seed"]
+fkpp.alpha = optimal_params["alpha"]
 
-model_output = fkpp_optimal.run_FKPP()
+model_output = fkpp.run_FKPP()
 min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
 
 plt.figure()

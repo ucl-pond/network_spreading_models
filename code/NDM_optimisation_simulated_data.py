@@ -35,7 +35,9 @@ ndm = NDM(connectome_fname = connectome_fname,
             ref_list=ref_list
           )
 
-res, optimal_params = ndm.optimise_seed_region(target_data)
+res, optimal_params = ndm.optimise_seed_region(target_data, 
+                                               n_calls=50,
+                                               n_initial_points=20)
 
 plt.figure()
 plot_convergence(res)
@@ -46,14 +48,9 @@ plot_objective(res)
 print(f"optimal seed = {optimal_params['seed']}")
 
 # run with the optimal parameters to get the prediction accuracy
-ndm_optimal = NDM(connectome_fname = connectome_fname,
-            gamma = 0.01,
-            t = t,
-            seed_region=optimal_params["seed"],
-            ref_list=ref_list
-          )
+ndm.seed_region = optimal_params["seed"]
 
-model_output = ndm_optimal.run_NDM()
+model_output = ndm.run_NDM()
 min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
 
 plt.figure()
