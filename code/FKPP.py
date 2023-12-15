@@ -37,7 +37,7 @@ class FKPP_class(NDM):
 
         return x_t
     
-    def optimise_fkpp(self, target_data, weights=None, n_calls=200, n_initial_points=100):
+    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=100):
         '''
         optimise seed and alpha parameter for fkpp model
         '''
@@ -53,7 +53,8 @@ class FKPP_class(NDM):
                 t = self.t,
                 ref_list=self.ref_list,
                 alpha=params["alpha"],
-                seed_region=params["seed_region"]
+                seed_region=params["seed_region"],
+                weights=self.weights
             )
             model_output = fkpp.run_FKPP()
             min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
@@ -66,6 +67,7 @@ class FKPP_class(NDM):
                         random_state=42,
                         initial_point_generator="sobol"
                         )
+        
         optimal_params = {}
         optimal_params["seed"] = res["x"][0]
         optimal_params["alpha"] = res["x"][1]

@@ -33,7 +33,7 @@ t = np.arange(0, 100, 1)
 
 # generate a random vector for the weighting term
 weights = np.random.rand(len(ref_list))
-#weights = None # uncomment this line to run without weighting
+weights = None # uncomment this line to run without weighting
 
 fkpp = FKPP_class(connectome_fname = connectome_fname,
             gamma = 0.01, # fixing gamma at this value for now
