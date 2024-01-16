@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from find_optimal_timepoint import find_optimal_timepoint, mysse
 from skopt.space import Categorical
 from skopt.utils import use_named_args
@@ -8,7 +9,7 @@ class NDM():
     """
     class containing the paramters and implimenting the Network diffusion model
     """
-    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None):
+    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None):
         '''
         inputs: connectome_fname = filename of connectome
                 gamma = diffusivity constant
@@ -21,6 +22,7 @@ class NDM():
         self.gamma = gamma
         self.t = t
         self.seed_region = seed_region
+        self.x0 = x0
         self.ref_list = ref_list
         self.dt = self.t[1]-self.t[0]
         self.Nt = len(self.t)
@@ -40,6 +42,8 @@ class NDM():
         return (seed_l_ind, seed_r_ind)
 
     def get_initial_conditions(self):
+        if self.x0 is not None:
+            return self.x0
         seed_l_ind, seed_r_ind = self.seed2idx()
         x_0 = np.zeros(len(self.ref_list))
         x_0[seed_l_ind] = 1
@@ -127,31 +131,21 @@ class NDM():
         optimise the seed region for the NDM model
         '''
         regions = self.get_regions()
-        space = [Categorical(regions, name ='seed_region')]
-        
-        @use_named_args(space)
-        def objective(**params):
-            ndm = NDM(connectome_fname=self.connectome_fname,
-                    gamma=self.gamma,
-                    t=self.t,
-                    seed_region=params["seed_region"],
-                    ref_list=self.ref_list
-                    )
-            model_output = ndm.run_NDM()
-            min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
-            return SSE
+        SSE = np.zeros(len(regions))
 
-        res = gp_minimize(objective, 
-                        dimensions=space, 
-                            acq_func="gp_hedge",
-                            n_calls=n_calls, 
-                            n_initial_points=n_initial_points,
-                            random_state=42,
-                            initial_point_generator="sobol"
-                            )
+        for i,r in enumerate(regions):
+            ndm = NDM(connectome_fname=self.connectome_fname,
+                        gamma=self.gamma,
+                        t=self.t,
+                        seed_region=r,
+                        ref_list=self.ref_list
+                        )
+            model_output = ndm.run_NDM()
+            min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data)
         
         optimal_params = {}
-        optimal_params["seed"] = res["x"][0]
+        optimal_params["seed"] = regions[np.argmin(SSE)]
+        res = pd.DataFrame({"seed":regions, "SSE":SSE})
         
         return res, optimal_params
 

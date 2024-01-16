@@ -6,8 +6,8 @@ from skopt import gp_minimize
 from find_optimal_timepoint import find_optimal_timepoint
 
 class FKPP_class(NDM):
-    def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, weights=None):
-        super().__init__(connectome_fname, gamma, t, ref_list, seed_region)
+    def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
+        super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0)
         self.alpha = alpha # logistic growth rate
         self.weights = weights # weighting for logistic growth term
 
@@ -37,7 +37,7 @@ class FKPP_class(NDM):
 
         return x_t
     
-    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=100):
+    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
         '''
         optimise seed and alpha parameter for fkpp model
         '''
