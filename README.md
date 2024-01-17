@@ -25,7 +25,7 @@ $$
 
 synthetic data
 
-### Models included
+## Models included
 - Network Diffusion Model(NDM)
   Pathology spreading between connected brain regions.
 - Fisher-Kolmogorov-Petrovsky-Piscounov (FKPP)
