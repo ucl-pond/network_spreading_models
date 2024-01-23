@@ -20,8 +20,10 @@ def plot_times_series(data_frame, cmap):
     fig,ax = plt.subplots(figsize=(15, 5))
     for x in range(0, len(data_frame.columns), 1):
         cmap = plt.get_cmap(cmap)
-        slicedCM = cmap(np.linspace(0, 1, len(df.columns))) 
+        slicedCM = cmap(np.linspace(0, 1, len(data_frame.columns))) 
         ax.plot(data_frame.index, data_frame.iloc[:,x], color=slicedCM[x])
-        plt.xlabel("Time")
-        plt.ylabel("Predicted tau accumulation")
+        plt.xlabel("Time",fontsize=20)
+        plt.ylabel("Predicted tau accumulation",fontsize=20)
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
         fig.show()
