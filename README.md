@@ -16,7 +16,7 @@ Equations and simulated pathology over time are provided in the figure below:
 ![docs/models.png](docs/images/models.png)
 
 ## Get started
-Run [NDM_optimisation_spreading_data.py](./code/NDM_optimisation_spreading_data.py) or [FKPP_optimisation_spreading_data.py](./code/FKPP_optimisation_spreading_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
+Run [NDM_optimisation_simulated_data.py](./code/NDM_optimisation_simulated_data.py) or [FKPP_optimisation_simulated_data.py](./code/FKPP_optimisation_simulated_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
 
 ## About us
 This toolbox originated from project for CMICHACKS 2023.
