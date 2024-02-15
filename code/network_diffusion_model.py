@@ -1,9 +1,7 @@
 import numpy as np
 import pandas as pd
+
 from find_optimal_timepoint import find_optimal_timepoint, mysse
-from skopt.space import Categorical
-from skopt.utils import use_named_args
-from skopt import gp_minimize
 
 class NDM():
     """
@@ -126,7 +124,7 @@ class NDM():
         regions = [r[:-2] for r in self.ref_list]
         return list(set(regions))
     
-    def optimise_seed_region(self, target_data, n_calls=200, n_initial_points=50):
+    def optimise_seed_region(self, target_data, n_calls=200, n_initial_points=50, objective_function=mysse):
         '''
         optimise the seed region for the NDM model
         '''
@@ -141,7 +139,7 @@ class NDM():
                         ref_list=self.ref_list
                         )
             model_output = ndm.run_NDM()
-            min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data)
+            min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data, objective_function)
         
         optimal_params = {}
         optimal_params["seed"] = regions[np.argmin(SSE)]
