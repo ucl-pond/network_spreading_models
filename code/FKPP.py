@@ -3,7 +3,7 @@ import numpy as np
 from skopt.space import Real, Categorical
 from skopt.utils import use_named_args
 from skopt import gp_minimize
-from find_optimal_timepoint import find_optimal_timepoint
+from find_optimal_timepoint import find_optimal_timepoint, mysse
 
 class FKPP_class(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
@@ -37,7 +37,7 @@ class FKPP_class(NDM):
 
         return x_t
     
-    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
+    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128, objective_function=mysse):
         '''
         optimise seed and alpha parameter for fkpp model
         '''
@@ -57,7 +57,7 @@ class FKPP_class(NDM):
                 weights=self.weights
             )
             model_output = fkpp.run_FKPP()
-            min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
+            min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data, objective_function)
             return SSE
 
         res = gp_minimize(objective, dimensions=space, 
