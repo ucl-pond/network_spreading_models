@@ -31,9 +31,16 @@ def KL_divergence(xx, yy):
     xx = xx/np.sum(xx, axis=0)
     yy = yy/np.sum(yy, axis=0)
 
-    xx = xx + 0.001
-    yy = yy + 0.001
+    xx = xx + 0.00001
+    yy = yy + 0.00001
     return entropy(xx, yy) + entropy(yy, xx)
+
+def pearsons_r(xx, yy):
+    '''returns 1 - Pearson's correlation between inputs xx and yy'''
+    num_t = np.shape(xx)[1] ## assuming xx is model output
+    R = [np.corrcoef(yy, xx[:,i])[0,1] for i in range(num_t)]
+    
+    return 1 - np.array(R)
 
 
 
