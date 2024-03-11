@@ -40,6 +40,8 @@ class FKPP_class(NDM):
     def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
         '''
         optimise seed and alpha parameter for fkpp model
+        increasing n_calls and n_initial points can improve model performance in some cases, but will slow down the optimisation.
+
         '''
         regions = self.get_regions()
 
