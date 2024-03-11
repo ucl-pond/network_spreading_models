@@ -129,6 +129,7 @@ class NDM():
     def optimise_seed_region(self, target_data, n_calls=200, n_initial_points=50):
         '''
         optimise the seed region for the NDM model
+        increasing n_calls and n_initial points can improve model performance in some cases, but will slow down the optimisation.
         '''
         regions = self.get_regions()
         SSE = np.zeros(len(regions))
