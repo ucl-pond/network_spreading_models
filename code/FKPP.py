@@ -38,7 +38,7 @@ class FKPP_class(NDM):
 
         for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
             x_t[:,kt] = x_t[:,kt-1] \
-                + self.alpha*self.spreading_weights*self.NDM_dx(H,x_t[:,kt-1]) \
+                + self.alpha*self.NDM_dx(H,self.spreading_weights*x_t[:,kt-1]) \
                 + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*self.production_weights*self.dt
 
         return x_t
