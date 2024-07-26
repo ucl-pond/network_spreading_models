@@ -1,15 +1,11 @@
 from pathlib import Path
+import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from network_diffusion_model import NDM
 from FKPP import FKPP_class
-from find_optimal_timepoint import find_optimal_timepoint, mysse
-import json
+from find_optimal_timepoint import find_optimal_timepoint
 
-from skopt.space import Real, Integer, Categorical
-from skopt.utils import use_named_args
-from skopt import gp_minimize
 from skopt.plots import plot_convergence, plot_objective
 
 np.int = np.int64
@@ -33,7 +29,7 @@ t = np.arange(0, 100, 1)
 
 # generate a random vector for the weighting term
 weights = np.random.rand(len(ref_list))
-weights = None # uncomment this line to run without weighting
+#weights = None # uncomment this line to run without weighting
 
 fkpp = FKPP_class(connectome_fname = connectome_fname,
             gamma = 0.01, # fixing gamma at this value for now

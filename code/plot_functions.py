@@ -1,15 +1,15 @@
 # functions for plotting output from the models
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 def plot_seed_correlations(data_frame, cmap):
     figure, ax = plt.subplots(figsize=(15, 10))
-    df1 = df[df['r'].notnull()] # drop NaNs
+    df1 = data_frame[data_frame['r'].notnull()] # drop NaNs
     df2 = df1.sort_values(by="r") # sort by r correlation value
     y = df2.iloc[:,1] # set y as r
     my_cmap = plt.get_cmap(cmap)
-    rescale = lambda y: (y - np.min(y)) / (np.max(y) - np.min(y))
+    def rescale(y):
+        return (y - np.min(y)) / (np.max(y) - np.min(y))
     ax.bar(df2.iloc[:,2], y, color=my_cmap(rescale(y)))
     plt.xticks(rotation=90)
     plt.xlabel("Seed Region")

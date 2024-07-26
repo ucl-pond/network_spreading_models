@@ -21,7 +21,7 @@ df_idaSearch  = pd.read_csv(csv_idaSearch) # Image ID to LONIUID (pet)
 df_idaSearch['RID'] = df_idaSearch['Subject ID'].map(lambda x: x.split('_')[-1]).astype(int)
 
 # ADNIMERGE: for demographics, biomarkers, Years_bl, etc.
-csv_merge = path_to_data / f'ADNIMERGE_08Nov2023.csv'
+csv_merge = path_to_data / 'ADNIMERGE_08Nov2023.csv'
 df_merge  = pd.read_csv(csv_merge,low_memory=False)
 
 # Choose your PET poison
