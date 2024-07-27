@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from FKPP import FKPP_class
+from FKPP import FKPP
 from find_optimal_timepoint import find_optimal_timepoint
 
 from skopt.plots import plot_convergence, plot_objective
@@ -31,7 +31,7 @@ t = np.arange(0, 100, 1)
 weights = np.random.rand(len(ref_list))
 #weights = None # uncomment this line to run without weighting
 
-fkpp = FKPP_class(connectome_fname = connectome_fname,
+fkpp = FKPP(connectome_fname = connectome_fname,
             gamma = 0.01, # fixing gamma at this value for now
             t = t,
             ref_list=ref_list,

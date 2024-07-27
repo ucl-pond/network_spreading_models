@@ -5,7 +5,7 @@ from skopt.utils import use_named_args
 from skopt import gp_minimize
 from find_optimal_timepoint import find_optimal_timepoint
 
-class FKPP_class(NDM):
+class FKPP(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
         super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0)
         self.alpha = alpha # logistic growth rate
@@ -50,7 +50,7 @@ class FKPP_class(NDM):
         
         @use_named_args(space)
         def objective(**params):
-            fkpp = FKPP_class(connectome_fname = self.connectome_fname,
+            fkpp = FKPP(connectome_fname = self.connectome_fname,
                 gamma = self.gamma,
                 t = self.t,
                 ref_list=self.ref_list,
@@ -62,9 +62,9 @@ class FKPP_class(NDM):
             min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
             return SSE
 
-        res = gp_minimize(objective, dimensions=space, 
-                        acq_func="gp_hedge", 
-                        n_calls=n_calls, 
+        res = gp_minimize(objective, dimensions=space,
+                        acq_func="gp_hedge",
+                        n_calls=n_calls,
                         n_initial_points=n_initial_points,
                         random_state=42,
                         initial_point_generator="sobol"
