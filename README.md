@@ -31,3 +31,4 @@ https://link.springer.com/chapter/10.1007/978-3-031-43993-3_45
 
 [3]. Thompson, E., Schroder, A., He, T., Legouhy, A., Zhao, X., Cole, J.H., Oxtoby, N.P. and Alexander, D.C., (2024, July). Demonstration of an open-source toolbox for network spreading models: regional amyloid burden promotes tau production in Alzheimer's disease. In Alzheimer's Association International Conference. ALZ.
 
+[3]. Thompson, E., Schroder, A., He, T., Legouhy, A., Zhao, X., Cole, J.H., Oxtoby, N.P. and Alexander, D.C., (2024, July). Demonstration of an open-source toolbox for network spreading models: regional amyloid burden promotes tau production in Alzheimer's disease. In Alzheimer's Association International Conference. ALZ.
