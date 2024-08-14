@@ -35,15 +35,7 @@ ndm = NDM(connectome_fname = connectome_fname,
             ref_list=ref_list
           )
 
-res, optimal_params = ndm.optimise_seed_region(target_data, 
-                                               n_calls=50,
-                                               n_initial_points=20)
-
-plt.figure()
-plot_convergence(res)
-
-plt.figure()
-plot_objective(res)
+res, optimal_params = ndm.optimise_seed_region(target_data)
 
 print(f"optimal seed = {optimal_params['seed']}")
 
