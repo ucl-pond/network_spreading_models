@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from FKPP import FKPP
+from FKPP_model import FKPP
 from find_optimal_timepoint import find_optimal_timepoint
 
 from skopt.plots import plot_convergence, plot_objective
