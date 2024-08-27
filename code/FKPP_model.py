@@ -27,7 +27,7 @@ class FKPP(NDM):
 
         if self.spreading_weights is None:
             self.spreading_weights = np.ones(len(self.ref_list))
-
+        
         H = self.get_Laplacian()
         W = np.diag(self.spreading_weights)
 
@@ -37,13 +37,16 @@ class FKPP(NDM):
         x_t[:] = 0
 
         x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
+        
+        weighted_laplacian = H@W    #apply the spreading weights to the laplacian
 
         for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
             x_t[:,kt] = x_t[:,kt-1] \
-                + self.alpha*self.NDM_dx(W@H,x_t[:,kt-1]) \
+                + self.alpha*self.NDM_dx(weighted_laplacian,x_t[:,kt-1]) \
                 + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*self.production_weights*self.dt
 
-        return x_t
+        x_t_norm = x_t/np.max(x_t,axis=0)
+        return x_t, x_t_norm
     
     def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
         '''
@@ -56,7 +59,7 @@ class FKPP(NDM):
         
         @use_named_args(space)
         def objective(**params):
-            fkpp = FKPP_class(connectome_fname = self.connectome_fname,
+            fkpp = FKPP(connectome_fname = self.connectome_fname,
                 gamma = self.gamma,
                 t = self.t,
                 ref_list=self.ref_list,
