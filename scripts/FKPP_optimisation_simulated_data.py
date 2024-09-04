@@ -1,15 +1,13 @@
-import json
 from pathlib import Path
+import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from network_diffusion_model import NDM
-from find_optimal_timepoint import find_optimal_timepoint
+from src.FKPP_model import FKPP
+from src.find_optimal_timepoint import find_optimal_timepoint
+
 from skopt.plots import plot_convergence, plot_objective
 
-'''
-testing the optimisation of the NDM model on simulated data
-'''
 np.int = np.int64
 
 path = Path(__file__).parent.absolute()
@@ -25,24 +23,36 @@ target_data = target_data[:,500]
 connectome_fname = data_dir / "tractography.csv"
 
 results_dir = path.parent / "results"
-results_name = "NDM_optimisation"
+results_name = "FKPP_optimisation"
 
 t = np.arange(0, 100, 1)
 
-ndm = NDM(connectome_fname = connectome_fname,
+# generate a random vector for the weighting term
+weights = np.random.rand(len(ref_list))
+#weights = None # uncomment this line to run without weighting
+
+fkpp = FKPP(connectome_fname = connectome_fname,
             gamma = 0.01, # fixing gamma at this value for now
             t = t,
-            ref_list=ref_list
+            ref_list=ref_list,
+            weights=weights
           )
 
-res, optimal_params = ndm.optimise_seed_region(target_data)
+res, optimal_params = fkpp.optimise_fkpp(target_data, n_calls=200, n_initial_points=100)
 
-print(f"optimal seed = {optimal_params['seed']}")
+plt.figure()
+plot_convergence(res)
+
+plt.figure()
+plot_objective(res)
+
+print(f"optimal seed = {optimal_params['seed']}\noptimal alpha = {optimal_params['alpha']}")
 
 # run with the optimal parameters to get the prediction accuracy
-ndm.seed_region = optimal_params["seed"]
+fkpp.seed_region = optimal_params["seed"]
+fkpp.alpha = optimal_params["alpha"]
 
-model_output = ndm.run_NDM()
+model_output = fkpp.run_FKPP()
 min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
 
 plt.figure()

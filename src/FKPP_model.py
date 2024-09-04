@@ -1,9 +1,9 @@
-from network_diffusion_model import NDM
+from src.network_diffusion_model import NDM
 import numpy as np
 from skopt.space import Real, Categorical
 from skopt.utils import use_named_args
 from skopt import gp_minimize
-from find_optimal_timepoint import find_optimal_timepoint
+from src.find_optimal_timepoint import find_optimal_timepoint
 
 class FKPP(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):

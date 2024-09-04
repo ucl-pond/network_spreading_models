@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from find_optimal_timepoint import find_optimal_timepoint
+from src.find_optimal_timepoint import find_optimal_timepoint
 
 class NDM():
     """
