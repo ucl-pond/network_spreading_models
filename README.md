@@ -16,6 +16,16 @@ Equations and simulated pathology over time are provided in the figure below:
 
 ![docs/models.png](docs/images/models.png)
 
+## Installation Instructions
+```bash
+# Use conda to install the relevant packages:
+conda env create --name network_spreading_models --file environment.yml
+conda activate network_spreading_models
+
+# pip install the source files
+pip install -e .
+```
+
 ## Get started
 Run [NDM_optimisation_simulated_data.py](./code/NDM_optimisation_simulated_data.py) or [FKPP_optimisation_simulated_data.py](./code/FKPP_optimisation_simulated_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
 
