@@ -27,7 +27,7 @@ pip install -e .
 ```
 
 ## Get started
-Run [NDM_optimisation_simulated_data.py](./code/NDM_optimisation_simulated_data.py) or [FKPP_optimisation_simulated_data.py](./code/FKPP_optimisation_simulated_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
+Run [NDM_optimisation_simulated_data.py](./scripts/NDM_optimisation_simulated_data.py) or [FKPP_optimisation_simulated_data.py](./scripts/FKPP_optimisation_simulated_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
 
 ## About us
 This toolbox originated from project for CMICHACKS 2023.
