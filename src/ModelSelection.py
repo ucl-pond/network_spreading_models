@@ -101,7 +101,7 @@ class ModelSelection:
             
             # AIC corrected (AICc)
             if self.criterion == 'AICc':
-                C += 2*n_dof*(2*n_dof+1)/(n_obs-n_dof-1)
+                C += 2*n_dof*(n_dof+1)/(n_obs-n_dof-1)
                 
         # Bayesian information criterion (BIC)
         elif self.criterion == 'BIC':
