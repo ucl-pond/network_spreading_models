@@ -26,18 +26,36 @@ class FKPP(NDM):
 
         H = self.get_Laplacian()
 
-        #loop through time points, estimating tau accumulation at each point
-        x_t = np.empty([len(H),self.Nt])
-        x_t[:] = 0
+        # define the ODE system
+        def fkpp_ode(t,x):
+            diffusion = self.NDM_dx(H, x)
+            logistic = self.logistic_model(x) * self.weights
+            return (self.alpha * diffusion) + ((1 - self.alpha) * logistic)
+        
+        # initial conditions
+        x0_full = self.get_initial_conditions()
 
-        x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
-
-        for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
-            x_t[:,kt] = x_t[:,kt-1] + self.alpha*self.NDM_dx(H,x_t[:,kt-1]) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*self.weights*self.dt
-
+        # solve the ODE system
+        sol = solve_ivp(
+            fun=fkpp_ode,
+            t_span=(self.t[0], self.t[-1]),
+            y0=x0_full,
+            method='RK45',
+            t_eval=self.t,
+            vectorized=False,
+            rtol=1e-6, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+            atol=1e-6, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+        )
+ 
+        if not sol.success:
+            raise RuntimeError(f"ODE solver failed: {sol.message}")
+ 
+        # Extract solution 
+        x_t = sol.y
+ 
         return x_t
     
-    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
+    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=64):
         '''
         optimise seed and alpha parameter for fkpp model
         increasing n_calls and n_initial points can improve model performance in some cases, but will slow down the optimisation.

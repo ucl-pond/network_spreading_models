@@ -73,7 +73,7 @@ class NDM():
     
     def NDM_dx(self,H,x):
 
-        return (-self.gamma * (H @ x)) * self.dt
+        return (-self.gamma * (H @ x)) 
 
     def get_Laplacian(self):
         '''
@@ -105,7 +105,7 @@ class NDM():
         x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
 
         for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
-                x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1])
+                x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1])* self.dt
 
         return x_t/np.max(x_t,axis=0)
     
