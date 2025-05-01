@@ -4,6 +4,7 @@ from skopt.space import Real, Categorical
 from skopt.utils import use_named_args
 from skopt import gp_minimize
 from src.find_optimal_timepoint import find_optimal_timepoint
+from scipy.integrate import solve_ivp
 
 class FKPP(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
