@@ -6,7 +6,7 @@ class NDM():
     """
     class containing the paramters and implimenting the Network diffusion model
     """
-    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None, connectome_array=None):
+    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None, connectome_array=None, cortical_idx=None):
         '''
         inputs: connectome_fname = filename of connectome
                 gamma = diffusivity constant
@@ -14,6 +14,10 @@ class NDM():
                 seed_region = region to use as seed for NDM
                 ref_list = list of regions, in same order as connectome and pathology data. 
                             assuming they are right and left hemispheres (need to be subscripted with _L and _R)
+                connectome_array = numpy array of connectome, if not provided, will load from file
+                cortical_idx = list of indices of cortical regions, if not provided, will use all regions
+                                this is used to select the regions to return in the output, where subcortical regions are removed due to off-target binding
+            
         '''
         self.connectome_fname = connectome_fname
         self.connectome_array = connectome_array
@@ -24,6 +28,10 @@ class NDM():
         self.ref_list = ref_list
         self.dt = self.t[1]-self.t[0]
         self.Nt = len(self.t)
+        if self.cortical_idx is None:
+            self.cortical_idx = np.arange(len(self.ref_list))
+        else:
+            self.cortical_idx = cortical_idx
  
     def seed2idx(self):
         '''
@@ -113,7 +121,7 @@ class NDM():
         for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
                 x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1])* self.dt
 
-        return x_t/np.max(x_t,axis=0)
+        return x_t[cortical_idx]/np.max(x_t,axis=0)
     
     def get_regions(self):
         '''
@@ -141,7 +149,8 @@ class NDM():
                         gamma=self.gamma,
                         t=self.t,
                         seed_region=r,
-                        ref_list=self.ref_list
+                        ref_list=self.ref_list,
+                        connectome_array=self.connectome_array
                         )
             model_output = ndm.run_NDM()
             min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data)
