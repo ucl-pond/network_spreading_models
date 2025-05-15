@@ -1,9 +1,10 @@
 from src.network_diffusion_model import NDM
 import numpy as np
-from skopt.space import Real, Categorical
-from skopt.utils import use_named_args
-from skopt import gp_minimize
 from src.find_optimal_timepoint import find_optimal_timepoint
+from scipy.integrate import solve_ivp
+from scipy import optimize
+from scipy.optimize import minimize
+from joblib import Parallel, delayed
 
 class FKPP(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
@@ -26,52 +27,108 @@ class FKPP(NDM):
 
         H = self.get_Laplacian()
 
-        #loop through time points, estimating tau accumulation at each point
-        x_t = np.empty([len(H),self.Nt])
-        x_t[:] = 0
+        # define the ODE system
+        def fkpp_ode(t,x):
+            diffusion = self.NDM_dx(H, x)
+            logistic = self.logistic_model(x) * self.weights
+            return (self.alpha * diffusion) + ((1 - self.alpha) * logistic)
+        
+        # initial conditions
+        x0_full = self.get_initial_conditions()
 
-        x_t[:,0] = self.get_initial_conditions() # set first time point to initial conditions.
-
-        for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
-            x_t[:,kt] = x_t[:,kt-1] + self.alpha*self.NDM_dx(H,x_t[:,kt-1]) + (1-self.alpha)*self.logistic_model(x_t[:,kt-1])*self.weights*self.dt
-
+        # solve the ODE system
+        sol = solve_ivp(
+            fun=fkpp_ode,
+            t_span=(self.t[0], self.t[-1]),
+            y0=x0_full,
+            method='RK45',
+            t_eval=self.t,
+            vectorized=False,
+            rtol=1e-3, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+            atol=1e-3, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+        )
+ 
+        if not sol.success:
+            raise RuntimeError(f"ODE solver failed: {sol.message}")
+ 
+        # Extract solution 
+        x_t = sol.y
+ 
         return x_t
     
-    def optimise_fkpp(self, target_data, n_calls=200, n_initial_points=128):
+    
+    def optimise_alpha(self, target_data, n_iter=100, T=0.1):
         '''
-        optimise seed and alpha parameter for fkpp model
-        increasing n_calls and n_initial points can improve model performance in some cases, but will slow down the optimisation.
-
+        optimise alpha parameter for fkpp model
+        alpha is optimised for a given seed region
+        uses scipy basinhopping to avoid local minima
         '''
-        regions = self.get_regions()
-
-        space  = [Categorical(regions, name ='seed_region'),
-                  Real(0, 1, name='alpha')]
-        
-        @use_named_args(space)
-        def objective(**params):
+        def objective(alpha):
             fkpp = FKPP(connectome_fname = self.connectome_fname,
                 gamma = self.gamma,
                 t = self.t,
                 ref_list=self.ref_list,
-                alpha=params["alpha"],
-                seed_region=params["seed_region"],
+                alpha=alpha,
+                seed_region=self.seed_region,
                 weights=self.weights
             )
             model_output = fkpp.run_FKPP()
             min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
             return SSE
 
-        res = gp_minimize(objective, dimensions=space,
-                        acq_func="gp_hedge",
-                        n_calls=n_calls,
-                        n_initial_points=n_initial_points,
-                        random_state=42,
-                        initial_point_generator="sobol"
-                        )
-        
-        optimal_params = {}
-        optimal_params["seed"] = res["x"][0]
-        optimal_params["alpha"] = res["x"][1]
+        minimizer_kwargs = {"method": "L-BFGS-B",
+                            "bounds": [(0, 1)]} # bounds for alpha
+        result = optimize.basinhopping(objective,
+                                        x0=0.5,
+                                        niter=n_iter,
+                                        stepsize=0.1,
+                                        T=T,
+                                        minimizer_kwargs=minimizer_kwargs)
+        best_alpha = result.x[0]
+        return best_alpha
 
-        return res, optimal_params
+    def optimise_fkpp(self, target_data, n_iter=100, T=0.1, seed_list=None):
+        '''
+        optimise parameters region for fkpp model
+        alpha is optimised for each seed, and the best seed is selected
+        according to the highest correlation with target data
+
+        n_iter: number of iterations for basinhopping
+        T: temperature for basinhopping
+        seed_list: list of seed regions to optimise over, if None, use all regions
+        '''
+
+        if seed_list is not None:
+            regions = seed_list
+            regions_check = self.get_regions() # getting the bilateral regions from the ref_list
+            # check that the regions are in the connectome
+            for region in regions:
+                if region not in regions_check:
+                    raise ValueError(f"seed region {region} not in reference list")
+
+        else:
+            regions = self.get_regions()
+
+
+        def evaluate_region(region):
+            fkpp = FKPP(connectome_fname=self.connectome_fname,
+                        gamma=self.gamma,
+                        t=self.t,
+                        ref_list=self.ref_list,
+                        seed_region=region,
+                        weights=self.weights)
+            alpha = fkpp.optimise_alpha(target_data)
+            fkpp.alpha = alpha
+            model_output = fkpp.run_FKPP()
+            min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
+            r = np.corrcoef(target_data, prediction)[0, 1]
+            return region, alpha, r
+
+        results = Parallel(n_jobs=-1)(delayed(evaluate_region)(region) for region in regions)
+
+        # Find the best result
+        best_region, best_alpha, best_r = max(results, key=lambda x: x[2])
+        return best_region, best_alpha, best_r
+
+    
+            
