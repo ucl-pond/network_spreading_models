@@ -28,7 +28,7 @@ class NDM():
         self.ref_list = ref_list
         self.dt = self.t[1]-self.t[0]
         self.Nt = len(self.t)
-        if self.cortical_idx is None:
+        if cortical_idx is None:
             self.cortical_idx = np.arange(len(self.ref_list))
         else:
             self.cortical_idx = cortical_idx
