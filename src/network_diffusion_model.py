@@ -121,7 +121,7 @@ class NDM():
         for kt in range(1,self.Nt):  #iterate through time points, calculating the node atrophy as you go along
                 x_t[:,kt] = x_t[:,kt-1] + self.NDM_dx(H,x_t[:,kt-1])* self.dt
 
-        return x_t[cortical_idx]/np.max(x_t,axis=0)
+        return x_t[self.cortical_idx]/np.max(x_t,axis=0)
     
     def get_regions(self):
         '''

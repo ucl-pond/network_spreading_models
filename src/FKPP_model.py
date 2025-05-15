@@ -56,7 +56,7 @@ class FKPP(NDM):
         # Extract solution 
         x_t = sol.y
  
-        return x_t[cortical_idx]
+        return x_t[self.cortical_idx]
     
     
     def optimise_alpha(self, target_data, n_iter=100, T=0.1):
