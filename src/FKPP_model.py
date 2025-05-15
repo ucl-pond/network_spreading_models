@@ -1,8 +1,5 @@
 from src.network_diffusion_model import NDM
 import numpy as np
-from skopt.space import Real, Categorical
-from skopt.utils import use_named_args
-from skopt import gp_minimize
 from src.find_optimal_timepoint import find_optimal_timepoint
 from scipy.integrate import solve_ivp
 from scipy import optimize
@@ -90,9 +87,9 @@ class FKPP(NDM):
         best_alpha = result.x[0]
         return best_alpha
 
-    def optimise_seed(self, target_data, n_iter=100, T=0.1, seed_list=None):
+    def optimise_fkpp(self, target_data, n_iter=100, T=0.1, seed_list=None):
         '''
-        optimise seed region for fkpp model
+        optimise parameters region for fkpp model
         alpha is optimised for each seed, and the best seed is selected
         according to the highest correlation with target data
 

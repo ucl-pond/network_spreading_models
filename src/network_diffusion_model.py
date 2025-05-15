@@ -6,7 +6,7 @@ class NDM():
     """
     class containing the paramters and implimenting the Network diffusion model
     """
-    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None):
+    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None, connectome_array=None):
         '''
         inputs: connectome_fname = filename of connectome
                 gamma = diffusivity constant
@@ -16,6 +16,7 @@ class NDM():
                             assuming they are right and left hemispheres (need to be subscripted with _L and _R)
         '''
         self.connectome_fname = connectome_fname
+        self.connectome_array = connectome_array
         self.gamma = gamma
         self.t = t
         self.seed_region = seed_region
@@ -49,27 +50,32 @@ class NDM():
 
 
     def prep_connectome(self):
-        '''
-        load connectome and ensure it is symmetrical
-        '''
-        with open(self.connectome_fname) as f:
-            first_line = f.readline()
-            if "," in first_line:
-                delimiter = ","
-            elif "\t" in first_line:
-                delimiter = "\t"
-            elif " " in first_line:
-                delimiter = " "
-            else:
-                raise ValueError("Delimiter not found")        
-        C = np.loadtxt(self.connectome_fname,delimiter=delimiter)
-
+        """
+        load connectome from file or use provided numpy array,
+        and ensure it is symmetrical
+        """
+        if self.connectome_array is not None:
+            # Use the in-memory array instead of loading from file
+            C = self.connectome_array
+        else:
+            with open(self.connectome_fname) as f:
+                first_line = f.readline()
+                if "," in first_line:
+                    delimiter = ","
+                elif "\t" in first_line:
+                    delimiter = "\t"
+                elif " " in first_line:
+                    delimiter = " "
+                else:
+                    raise ValueError("Delimiter not found")
+            C = np.loadtxt(self.connectome_fname, delimiter=delimiter)
+        
         # check connectome is 2D square
         assert C.shape[0] == C.shape[1]
-        assert len(C.shape) ==2
+        assert len(C.shape) == 2
 
         # make symmetric matrix
-        return np.triu(C,1)+np.tril(C.T)
+        return np.triu(C,1) + np.tril(C.T)
     
     def NDM_dx(self,H,x):
 
