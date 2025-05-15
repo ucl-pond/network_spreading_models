@@ -7,8 +7,10 @@ from scipy.optimize import minimize
 from joblib import Parallel, delayed
 
 class FKPP(NDM):
-    def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None):
-        super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0)
+    def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None,
+                 connectome_array=None, cortical_idx=None):
+        
+        super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0, connectome_array, cortical_idx)
         self.alpha = alpha # logistic growth rate
         self.weights = weights # weighting for logistic growth term
 
@@ -54,7 +56,7 @@ class FKPP(NDM):
         # Extract solution 
         x_t = sol.y
  
-        return x_t
+        return x_t[cortical_idx]
     
     
     def optimise_alpha(self, target_data, n_iter=100, T=0.1):
