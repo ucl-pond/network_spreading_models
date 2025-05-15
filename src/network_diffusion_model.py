@@ -150,7 +150,8 @@ class NDM():
                         t=self.t,
                         seed_region=r,
                         ref_list=self.ref_list,
-                        connectome_array=self.connectome_array
+                        connectome_array=self.connectome_array,
+                        cortical_idx=self.cortical_idx
                         )
             model_output = ndm.run_NDM()
             min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data)

@@ -72,8 +72,11 @@ class FKPP(NDM):
                 ref_list=self.ref_list,
                 alpha=alpha,
                 seed_region=self.seed_region,
-                weights=self.weights
-            )
+                weights=self.weights,
+                connectome_array=self.connectome_array,
+                cortical_idx=self.cortical_idx
+                )
+            
             model_output = fkpp.run_FKPP()
             min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
             return SSE
@@ -118,7 +121,10 @@ class FKPP(NDM):
                         t=self.t,
                         ref_list=self.ref_list,
                         seed_region=region,
-                        weights=self.weights)
+                        weights=self.weights,
+                        connectome_array=self.connectome_array,
+                        cortical_idx=self.cortical_idx
+                        )
             alpha = fkpp.optimise_alpha(target_data)
             fkpp.alpha = alpha
             model_output = fkpp.run_FKPP()
