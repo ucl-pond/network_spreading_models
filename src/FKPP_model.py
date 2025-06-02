@@ -5,12 +5,13 @@ from scipy.integrate import solve_ivp
 from scipy import optimize
 from scipy.optimize import minimize
 from joblib import Parallel, delayed
+import pandas as pd
 
 class FKPP(NDM):
     def __init__(self, connectome_fname, gamma, t, ref_list, alpha=None, seed_region=None, x0=None, weights=None,
-                 connectome_array=None, cortical_idx=None):
+                 connectome_array=None, cortical_idx=None, lateral_seeding=False):
         
-        super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0, connectome_array, cortical_idx)
+        super().__init__(connectome_fname, gamma, t, ref_list, seed_region, x0, connectome_array, cortical_idx, lateral_seeding)
         self.alpha = alpha # logistic growth rate
         self.weights = weights # weighting for logistic growth term
 
@@ -74,7 +75,8 @@ class FKPP(NDM):
                 seed_region=self.seed_region,
                 weights=self.weights,
                 connectome_array=self.connectome_array,
-                cortical_idx=self.cortical_idx
+                cortical_idx=self.cortical_idx,
+                lateral_seeding=self.lateral_seeding
                 )
             
             model_output = fkpp.run_FKPP()
@@ -111,8 +113,10 @@ class FKPP(NDM):
                 if region not in regions_check:
                     raise ValueError(f"seed region {region} not in reference list")
 
-        else:
+        elif not self.lateral_seeding:
             regions = self.get_regions()
+        else:
+            regions = self.ref_list
 
 
         def evaluate_region(region):
@@ -123,7 +127,8 @@ class FKPP(NDM):
                         seed_region=region,
                         weights=self.weights,
                         connectome_array=self.connectome_array,
-                        cortical_idx=self.cortical_idx
+                        cortical_idx=self.cortical_idx,
+                        lateral_seeding=self.lateral_seeding
                         )
             alpha = fkpp.optimise_alpha(target_data)
             fkpp.alpha = alpha
@@ -132,11 +137,14 @@ class FKPP(NDM):
             r = np.corrcoef(target_data, prediction)[0, 1]
             return region, alpha, r
 
-        results = Parallel(n_jobs=-1)(delayed(evaluate_region)(region) for region in regions)
+        res = Parallel(n_jobs=-1)(delayed(evaluate_region)(region) for region in regions)
 
         # Find the best result
-        best_region, best_alpha, best_r = max(results, key=lambda x: x[2])
-        return best_region, best_alpha, best_r
+        optimal_params = {}
+        optimal_params["seed"], optimal_params["alpha"], optimal_params["r"] = max(res, key=lambda x: x[2])
+
+        res = pd.DataFrame(res, columns=["seed_region", "alpha", "r"])
+        return res, optimal_params
 
     
             
