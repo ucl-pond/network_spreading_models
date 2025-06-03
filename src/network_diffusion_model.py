@@ -6,7 +6,7 @@ class NDM():
     """
     class containing the paramters and implimenting the Network diffusion model
     """
-    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None, connectome_array=None, cortical_idx=None):
+    def __init__(self, connectome_fname, gamma, t, ref_list, seed_region=None, x0=None, connectome_array=None, cortical_idx=None, lateral_seeding=False):
         '''
         inputs: connectome_fname = filename of connectome
                 gamma = diffusivity constant
@@ -32,6 +32,7 @@ class NDM():
             self.cortical_idx = np.arange(len(self.ref_list))
         else:
             self.cortical_idx = cortical_idx
+        self.lateral_seeding = lateral_seeding
  
     def seed2idx(self):
         '''
@@ -43,17 +44,28 @@ class NDM():
             seed_r_ind: index of right seed
 
         '''
-        seed_l_ind = self.ref_list.index(self.seed_region + "_L")
-        seed_r_ind = self.ref_list.index(self.seed_region + "_R")
-        return (seed_l_ind, seed_r_ind)
+        if not self.lateral_seeding:
+            seed_l_ind = self.ref_list.index(self.seed_region + "_L")
+            seed_r_ind = self.ref_list.index(self.seed_region + "_R")
+            return (seed_l_ind, seed_r_ind)
+        else:
+            seed_ind = self.ref_list.index(self.seed_region) # just seeding from one hemisphere
+            return seed_ind
 
     def get_initial_conditions(self):
         if self.x0 is not None:
+            # initial conditions have been pre-defined
             return self.x0
-        seed_l_ind, seed_r_ind = self.seed2idx()
-        x_0 = np.zeros(len(self.ref_list))
-        x_0[seed_l_ind] = 1
-        x_0[seed_r_ind] = 1
+        if not self.lateral_seeding:
+            seed_l_ind, seed_r_ind = self.seed2idx()
+            x_0 = np.zeros(len(self.ref_list))
+            x_0[seed_l_ind] = 1
+            x_0[seed_r_ind] = 1
+        else:
+            #just one seed region
+            seed_ind = self.seed2idx()
+            x_0 = np.zeros(len(self.ref_list))
+            x_0[seed_ind] = 1
         return x_0
 
 
@@ -141,7 +153,10 @@ class NDM():
         '''
         optimise the seed region for the NDM model
         '''
+        
         regions = self.get_regions()
+        if self.lateral_seeding:
+            regions = self.ref_list
         SSE = np.zeros(len(regions))
 
         for i,r in enumerate(regions):
@@ -151,7 +166,8 @@ class NDM():
                         seed_region=r,
                         ref_list=self.ref_list,
                         connectome_array=self.connectome_array,
-                        cortical_idx=self.cortical_idx
+                        cortical_idx=self.cortical_idx,
+                        lateral_seeding=self.lateral_seeding
                         )
             model_output = ndm.run_NDM()
             min_idx, prediction, SSE[i] = find_optimal_timepoint(model_output, target_data)
