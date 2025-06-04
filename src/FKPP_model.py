@@ -47,8 +47,8 @@ class FKPP(NDM):
             method='RK45',
             t_eval=self.t,
             vectorized=False,
-            rtol=1e-3, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
-            atol=1e-3, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+            rtol=1e-6, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
+            atol=1e-6, # minimum value to treat as 0 change in gradient, if takes too long to run can 1e-3 
         )
  
         if not sol.success:
