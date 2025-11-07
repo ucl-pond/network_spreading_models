@@ -28,6 +28,11 @@ class FKPP(NDM):
         if self.weights is None:
             self.weights = np.ones(len(self.ref_list))
 
+        else:
+            # Check if weights has the correct shape
+            if len(self.weights) != len(self.ref_list):
+                raise ValueError(f"weights must have the same length as ref_list. Expected {len(self.ref_list)}, got {len(self.weights)}.")
+
         H = self.get_Laplacian()
 
         # define the ODE system
@@ -94,7 +99,7 @@ class FKPP(NDM):
         best_alpha = result.x[0]
         return best_alpha
 
-    def optimise_fkpp(self, target_data, n_iter=100, T=0.1, seed_list=None):
+    def optimise_fkpp_params(self, target_data, n_iter=100, T=0.1, seed_list=None):
         '''
         optimise parameters region for fkpp model
         alpha is optimised for each seed, and the best seed is selected
