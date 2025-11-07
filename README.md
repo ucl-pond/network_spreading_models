@@ -14,7 +14,7 @@ Weighting the production rates in the FKPP model by different values across the 
 
 Equations and simulated pathology over time are provided in the figure below:
 
-![docs/models.png](docs/images/models.png)
+![images/models.png](images/models.png)
 
 ## Installation Instructions
 ```bash
