@@ -5,7 +5,7 @@ pathology spread in neurodegenerative disease. We present our network spreading 
 ## Available models
 - <b>Network Diffusion Model (NDM)</b>
   models diffusive spread of pathology between connected brain regions ([Raj et al.](https://pubmed.ncbi.nlm.nih.gov/22445347/))
-- <b>Fisher-Kolmogorov-Petrovsky-Piscounov (FKPP)</b>: 
+- <b>Fisher-Kolmogorov-Petrovsky-Piskunov (FKPP)</b>: 
   network spreading plus uniform local production of pathology ([Weickenmeier et al.](https://www.sciencedirect.com/science/article/pii/S0022509618307063?via%3Dihub))
 - <b>Weighted-FKPP</b>: 
   spreading plus regionally-varying production weighted by a vector of choice ([He et al.](https://link.springer.com/chapter/10.1007/978-3-031-43993-3_45))
