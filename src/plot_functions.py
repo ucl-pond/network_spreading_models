@@ -16,15 +16,13 @@ def plot_seed_correlations(data_frame, cmap):
     plt.ylabel("Correlation Pearson's r")
     plt.show()
   
-def plot_times_series(model_output, t, cmap):
+def plot_times_series(model_output, t, cmap="viridis"):
     n_seeds = model_output.shape[0]
-    fig,ax = plt.subplots(figsize=(15, 5))
+    fig,ax = plt.subplots(figsize=(5,3), dpi=300)
     for x in range(n_seeds):
         cmap = plt.get_cmap(cmap)
         slicedCM = cmap(np.linspace(0, 1, n_seeds))
         ax.plot(t, model_output[x,:], color=slicedCM[x])
-        plt.xlabel("Time",fontsize=20)
-        plt.ylabel("Predicted tau accumulation",fontsize=20)
-        plt.xticks(fontsize=15)
-        plt.yticks(fontsize=15)
+        plt.xlabel("Time")
+        plt.ylabel("Predicted pathology accumulation")
         fig.show()

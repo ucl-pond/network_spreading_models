@@ -54,8 +54,14 @@ class NDM():
 
     def get_initial_conditions(self):
         if self.x0 is not None:
+            # Check if x0 has the correct shape
+            if len(self.x0) != len(self.ref_list):
+                raise ValueError(f"x0 must have the same length as ref_list. Expected {len(self.ref_list)}, got {len(self.x0)}.")
             # initial conditions have been pre-defined
             return self.x0
+        if self.seed_region is None:
+            raise ValueError("Initial conditions cannot be set: 'seed_region' or 'x0' must be provided.")
+
         if not self.lateral_seeding:
             seed_l_ind, seed_r_ind = self.seed2idx()
             x_0 = np.zeros(len(self.ref_list))
@@ -66,6 +72,7 @@ class NDM():
             seed_ind = self.seed2idx()
             x_0 = np.zeros(len(self.ref_list))
             x_0[seed_ind] = 1
+
         return x_0
 
 
