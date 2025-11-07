@@ -33,11 +33,12 @@ uv pip install -e .
 ```
 
 ## Get started
-Run [NDM_optimisation_simulated_data.py](./scripts/NDM_optimisation_simulated_data.py) or [FKPP_optimisation_simulated_data.py](./scripts/FKPP_optimisation_simulated_data.py) to run example code for the NDM or the FKPP models. This selects optimal model parameters for each model using a simulated dataset.
+The tutorial in notebooks/tutorial.ipynb should get you familiar with the different models in the toolbox. If you have any further questions, don't hesitate to raise an issue!
 
 ## About us
 This toolbox originated from project for CMICHACKS 2023.
 The team included: Ellie Thompson, Anna Schroder, Tiantian He, Neil Oxtoby, James Cole, Antoine Legouhy and Xin Zhao.
+If you use the toolbox for your project, please cite the AAIC abstract below.
   
 ## References
 [1].	He, T., Schroder, A., Thompson, E., Oxtoby, N. P., Abdulaal, A., Barkhof, F., & Alexander, D. C. (2023). Coupled pathology appearance and propagation models of neurodegeneration. The Organization for Human Brain Mapping (OHBM) 2023 Annual Meeting, [Oral Presentation]
