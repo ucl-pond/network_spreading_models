@@ -26,6 +26,7 @@ conda activate network_spreading_models
 pip install -e .
 ```
 ### alternative installation with uv
+The uv package manager may be more reliable for installing on Linux. First, you will need to install uv using the instructions [here](https://docs.astral.sh/uv/getting-started/installation/).
 ```
 uv venv -p 3.12
 uv pip sync requirements.txt
