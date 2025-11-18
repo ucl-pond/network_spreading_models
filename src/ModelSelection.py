@@ -157,8 +157,8 @@ class ModelSelection:
         
 
            
-residuals = np.random.normal(size=(100,5))
-results = ModelSelection([3,3,4,2,3], 'AICc')(residuals)
-print(results)
+#residuals = np.random.normal(size=(100,5))
+#results = ModelSelection([3,3,4,2,3], 'AICc')(residuals)
+#print(results)
 
 
