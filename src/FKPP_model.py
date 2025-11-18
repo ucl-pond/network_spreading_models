@@ -140,15 +140,16 @@ class FKPP(NDM):
             model_output = fkpp.run_FKPP()
             min_idx, prediction, SSE = find_optimal_timepoint(model_output, target_data)
             r = np.corrcoef(target_data, prediction)[0, 1]
-            return region, alpha, r
+            SSE = np.sum((target_data - prediction) ** 2)
+            return region, alpha, r, SSE
 
         res = Parallel(n_jobs=-1)(delayed(evaluate_region)(region) for region in regions)
 
         # Find the best result
         optimal_params = {}
-        optimal_params["seed"], optimal_params["alpha"], optimal_params["r"] = max(res, key=lambda x: x[2])
+        optimal_params["seed"], optimal_params["alpha"], optimal_params["r"], optimal_params["SSE"] = min(res, key=lambda x: x[3])
 
-        res = pd.DataFrame(res, columns=["seed_region", "alpha", "r"])
+        res = pd.DataFrame(res, columns=["seed_region", "alpha", "r", "SEE"])
         return res, optimal_params
 
     

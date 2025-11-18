@@ -17,21 +17,37 @@ Equations and simulated pathology over time are provided in the figure below:
 ![images/models.png](images/models.png)
 
 ## Installation Instructions
+
+### Option 1: Using conda (recommended)
 ```bash
-# Use conda to install the relevant packages:
+# Create and activate conda environment
 conda env create --name network_spreading_models --file environment.yml
 conda activate network_spreading_models
 
-# pip install the source files
+# Install the package in development mode
 pip install -e .
+
+# Verify installation
+python -c "import src; print('Installation successful!')"
 ```
-### alternative installation with uv
+
+### Option 2: Using uv
 The uv package manager may be more reliable for installing on Linux. First, you will need to install uv using the instructions [here](https://docs.astral.sh/uv/getting-started/installation/).
-```
+
+```bash
+# Create virtual environment (Python 3.12)
 uv venv -p 3.12
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies and package
 uv pip sync requirements.txt
 uv pip install -e .
+
+# Verify installation
+python -c "import src; print('Installation successful!')"
 ```
+
+**Note:** Both installation methods include ipython, which is required for running the tutorial notebook.
 
 ## Get started
 The tutorial in notebooks/tutorial.ipynb should get you familiar with the different models in the toolbox. If you have any further questions, don't hesitate to raise an issue!
