@@ -9,6 +9,8 @@ pathology spread in neurodegenerative disease. We present our network spreading 
   network spreading plus uniform local production of pathology ([Weickenmeier et al.](https://www.sciencedirect.com/science/article/pii/S0022509618307063?via%3Dihub))
 - <b>Weighted-FKPP</b>: 
   spreading plus regionally-varying production weighted by a vector of choice ([He et al.](https://link.springer.com/chapter/10.1007/978-3-031-43993-3_45))
+- <b>Interaction-weighted FKPP</b>:
+  an extension of the weighted-FKPP model with extra coupling parameter $\gamma_{regional}$ that determines maximum influence of the regional weights on production ([McAlinden at al.](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5707002))
 
 Weighting the production rates in the FKPP model by different values across the brain can improve the ability of the model to capture pathology patterns, by taking into account different regional characteristics during disease progression [1,2]. We define this new model as weighted-FKPP, and show that weighting pathology production with regional amyloid improves the model fit to tau-PET data [3].
 
@@ -18,7 +20,7 @@ Equations and simulated pathology over time are provided in the figure below:
 
 ## Installation Instructions
 
-### Option 1: Using conda (recommended)
+### Option 1: Using conda
 ```bash
 # Create and activate conda environment
 conda env create --name network_spreading_models --file environment.yml
@@ -64,3 +66,6 @@ If you use the toolbox for your project, please cite the AAIC abstract below.
 https://link.springer.com/chapter/10.1007/978-3-031-43993-3_45
 
 [3]. Thompson, E., Schroder, A., He, T., Legouhy, A., Zhao, X., Cole, J.H., Oxtoby, N.P. and Alexander, D.C., (2024, July). Demonstration of an open-source toolbox for network spreading models: regional amyloid burden promotes tau production in Alzheimer's disease. In Alzheimer's Association International Conference. ALZ.https://alz-journals.onlinelibrary.wiley.com/doi/full/10.1002/alz.093791
+
+[4]. McAlinden, D., Thompson, E., Soskic, S., Oxtoby, N. P. (2025). Predicting the spread of Alzheimer's disease pathology using brain connectomes, amyloid beta and tau during different cognitive stages. MSc Project report, available at SSRN: http://dx.doi.org/10.2139/ssrn.5707002
+
