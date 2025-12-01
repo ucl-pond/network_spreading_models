@@ -149,7 +149,7 @@ class FKPP(NDM):
         optimal_params = {}
         optimal_params["seed"], optimal_params["alpha"], optimal_params["r"], optimal_params["SSE"] = min(res, key=lambda x: x[3])
 
-        res = pd.DataFrame(res, columns=["seed_region", "alpha", "r", "SEE"])
+        res = pd.DataFrame(res, columns=["seed_region", "alpha", "r", "SSE"])
         return res, optimal_params
 
     
