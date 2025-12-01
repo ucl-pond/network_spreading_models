@@ -20,6 +20,8 @@ Equations and simulated pathology over time are provided in the figure below:
 
 ## Installation Instructions
 
+First, clone the repository into your desired location. Then, from within `network_spreading_models` directory:
+
 ### Option 1: Using conda
 ```bash
 # Create and activate conda environment
@@ -30,7 +32,7 @@ conda activate network_spreading_models
 pip install -e .
 
 # Verify installation
-python -c "import src; print('Installation successful!')"
+python -c 'import src; print("Installation successful!")'
 ```
 
 ### Option 2: Using uv
@@ -46,7 +48,7 @@ uv pip sync requirements.txt
 uv pip install -e .
 
 # Verify installation
-python -c "import src; print('Installation successful!')"
+python -c 'import src; print("Installation successful!")'
 ```
 
 **Note:** Both installation methods include ipython, which is required for running the tutorial notebook.
