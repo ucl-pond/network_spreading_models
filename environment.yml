@@ -56,7 +56,6 @@ dependencies:
   - python=3.12
   - python-dateutil=2.9.0
   - python-tzdata=2023.3
-  - python_abi=3.9
   - pytz=2024.1
   - pyyaml=6.0
   - readline=8.2
@@ -76,4 +75,3 @@ dependencies:
   - zipp=3.17.0
   - zlib=1.2.13
   - zstd=1.5.0
-prefix: /Users/ellie/miniconda3/envs/network_spreading_models
